@@ -1,16 +1,11 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 
 public class SwerveModuleSim implements SwerveModuleIO {
@@ -26,7 +21,6 @@ public class SwerveModuleSim implements SwerveModuleIO {
         turnPID.enableContinuousInput(0, 2 * Math.PI);
     }
 
-    private SwerveModulePosition position = new SwerveModulePosition();
     private SwerveModuleState theoreticalState = new SwerveModuleState();
     private double drivePositionM = 0.0;
     private double driveAppliedVolts = 0.0;
