@@ -26,12 +26,13 @@ public final class Constants {
   }
   public static class Swerve
   {
-    public static final int maxSpeedMPS = 5;
+    public static final int maxDriveSpeedMPS = 5;
     public static final double maxRotationSpeedRadPS = 2 * Math.PI;
     public static final double controllerDeadBand = 0.1;
     public static final double maxDriveAccelerationMPSS = 5;
     public static final double maxRotationAccelerationRadPSS = 2 * Math.PI;
     public static final double horizontalBaseM = Units.inchesToMeters(17.5);
+    public static final double wheelDiameterM = Units.inchesToMeters(3.5);
     public static final double verticalBaseM = Units.inchesToMeters(17.5);
 
     public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(

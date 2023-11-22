@@ -7,7 +7,7 @@
 
 
 
-package frc.robot.subsystems.Swerve;
+package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -21,7 +21,6 @@ public interface SwerveModuleIO {
     public double driveCurrentAmps = 0.0;
     public double driveTempCelcius = 0.0;   
 
-    public double turnAbsolutePositionRad = 0.0;
     public double turnPositionRad = 0.0;
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;

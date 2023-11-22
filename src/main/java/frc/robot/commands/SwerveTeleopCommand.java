@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.subsystems.Swerve.SwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -15,6 +15,7 @@ import javax.sql.XADataSource;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -36,7 +37,8 @@ public class SwerveTeleopCommand extends CommandBase {
     addRequirements(Robot.swerve);
   }
 
-  private final SlewRateLimiter driveLimiter = new SlewRateLimiter(Constants.Swerve.maxDriveAccelerationMPSS);
+  private final SlewRateLimiter xLimiter = new SlewRateLimiter(Constants.Swerve.maxDriveAccelerationMPSS);
+  private final SlewRateLimiter yLimiter = new SlewRateLimiter(Constants.Swerve.maxDriveAccelerationMPSS);
   private final SlewRateLimiter turnLimiter = new SlewRateLimiter(Constants.Swerve.maxRotationAccelerationRadPSS);
 
   // Called when the command is initially scheduled.
@@ -48,23 +50,32 @@ public class SwerveTeleopCommand extends CommandBase {
   public void execute() 
   {
     double xSpeed = leftX.getAsDouble();
-    double ySpeed = -leftY.getAsDouble();
+    double ySpeed = leftY.getAsDouble();
     double turningSpeed = rightX.getAsDouble();
     //dead band is because controller drift: not touching anything may equal 0.003 read
-    xSpeed = xSpeed > Constants.Swerve.controllerDeadBand ? xSpeed : 0;
-    ySpeed = ySpeed > Constants.Swerve.controllerDeadBand ? ySpeed : 0;
-    turningSpeed = turningSpeed > Constants.Swerve.controllerDeadBand ? turningSpeed : 0;
+    xSpeed = Math.abs(xSpeed) > Constants.Swerve.controllerDeadBand ? xSpeed : 0;
+    ySpeed = Math.abs(ySpeed) > Constants.Swerve.controllerDeadBand ? ySpeed : 0;
+    turningSpeed = Math.abs(turningSpeed) > Constants.Swerve.controllerDeadBand ? turningSpeed : 0;
 
-    xSpeed = driveLimiter.calculate(xSpeed * Constants.Swerve.maxSpeedMPS);
-    ySpeed = driveLimiter.calculate(ySpeed * Constants.Swerve.maxSpeedMPS);
-    turningSpeed = driveLimiter.calculate(turningSpeed * Constants.Swerve.maxRotationSpeedRadPS);
+    xSpeed = xLimiter.calculate(xSpeed * Constants.Swerve.maxDriveSpeedMPS);
+    ySpeed = yLimiter.calculate(ySpeed * Constants.Swerve.maxDriveSpeedMPS);
+    turningSpeed = turnLimiter.calculate(turningSpeed * Constants.Swerve.maxRotationSpeedRadPS);
+
+   /*  SmartDashboard.putNumber("xspeed", xSpeed);
+    SmartDashboard.putNumber("yspeed", ySpeed);
+    SmartDashboard.putNumber("turnSpeed", turningSpeed);
+    */
 
     //chassis speed
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed,ySpeed,turningSpeed, Robot.swerve.getRotation2d());
+    //System.out.println(chassisSpeeds);
+    SmartDashboard.putNumber("chassisspeedx", chassisSpeeds.vxMetersPerSecond);
+    SmartDashboard.putNumber("chassisspeedy", chassisSpeeds.vyMetersPerSecond);
+
 
     SwerveModuleState[] states = Constants.Swerve.driveKinematics.toSwerveModuleStates(chassisSpeeds);
+    //SmartDashboard.putNumber("states", states);
     Robot.swerve.setModuleStates(states);
-    
   }
 
   // Called once the command ends or is interrupted.

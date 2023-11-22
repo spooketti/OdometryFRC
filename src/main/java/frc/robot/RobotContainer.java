@@ -29,8 +29,8 @@ public class RobotContainer {
   private void configureBindings() 
   {
     Robot.swerve.setDefaultCommand(new SwerveTeleopCommand(
-      () -> pilot.getLeftX(),
-      () -> pilot.getLeftY(),
+      () -> -pilot.getLeftY(),
+      () -> -pilot.getLeftX(),
       () -> pilot.getRightX()
     ));
 
