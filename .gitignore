@@ -135,6 +135,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+.wpilog
+
 ### Gradle ###
 .gradle
 /build/
@@ -170,3 +172,5 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+
+

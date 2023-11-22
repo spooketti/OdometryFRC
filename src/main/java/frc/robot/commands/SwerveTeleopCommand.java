@@ -72,7 +72,6 @@ public class SwerveTeleopCommand extends CommandBase {
     SmartDashboard.putNumber("chassisspeedx", chassisSpeeds.vxMetersPerSecond);
     SmartDashboard.putNumber("chassisspeedy", chassisSpeeds.vyMetersPerSecond);
 
-
     SwerveModuleState[] states = Constants.Swerve.driveKinematics.toSwerveModuleStates(chassisSpeeds);
     //SmartDashboard.putNumber("states", states);
     Robot.swerve.setModuleStates(states);

@@ -19,7 +19,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
 
     private PIDController drivePID = new PIDController(1.5, 0, 0);
     private SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0, 2.93);
-    private PIDController turnPID = new PIDController(3, 0, 0);
+    private PIDController turnPID = new PIDController(6, 0, 0);
 
     public SwerveModuleSim() {
         

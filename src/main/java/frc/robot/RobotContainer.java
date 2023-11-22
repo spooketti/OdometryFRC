@@ -6,6 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveTeleopCommand;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,6 +27,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    DataLogManager.start(".wpilog");
+    DataLogManager.logNetworkTables(true);
+    
+        DriverStation.startDataLog(DataLogManager.getLog(), true);
   }
 
   private void configureBindings() 
@@ -31,7 +38,7 @@ public class RobotContainer {
     Robot.swerve.setDefaultCommand(new SwerveTeleopCommand(
       () -> -pilot.getLeftY(),
       () -> -pilot.getLeftX(),
-      () -> pilot.getRightX()
+      () -> -pilot.getRightX()
     ));
 
   }
