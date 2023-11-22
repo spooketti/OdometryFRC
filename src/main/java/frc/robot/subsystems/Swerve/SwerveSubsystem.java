@@ -14,7 +14,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final SwerveModuleIO[] modules = new SwerveModuleIO[4];
   private final ModuleData[] moduleData = new ModuleData[4];
-  private double realAngle = 0;
+  private double realAngleRad = 0;
 
   public SwerveSubsystem()
   {
@@ -40,7 +40,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Rotation2d getRotation2d()
   {
-    return new Rotation2d();
+    return new Rotation2d(realAngleRad);
   }
 
   @Override 
@@ -107,15 +107,15 @@ public class SwerveSubsystem extends SubsystemBase {
     
     ChassisSpeeds realSpeeds = Constants.Swerve.driveKinematics.toChassisSpeeds(frontLeftState,frontRightState,backLefState,backRighState);
     double turnDiff = realSpeeds.omegaRadiansPerSecond * 0.02;
-    realAngle += turnDiff;
+    realAngleRad += turnDiff;
 
-    while (realAngle < 0) {
-      realAngle += 2.0 * Math.PI;
+    while (realAngleRad < 0) {
+      realAngleRad += 2.0 * Math.PI;
   }
-  while (realAngle > 2.0 * Math.PI) {
-      realAngle -= 2.0 * Math.PI;
+  while (realAngleRad > 2.0 * Math.PI) {
+      realAngleRad -= 2.0 * Math.PI;
   }
-    SmartDashboard.putNumber("RobotRotation", realAngle /Math.PI * 180);
+    SmartDashboard.putNumber("RobotRotation", realAngleRad /Math.PI * 180);
 
     // this is the veloicty -> convert to number (position) or an angle SmartDashboard.putNumber("realRotation",realSpeeds.omegaRadiansPerSecond);
 
