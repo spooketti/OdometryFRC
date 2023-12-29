@@ -26,6 +26,10 @@ public interface SwerveModuleIO {
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
     public double turnTempCelcius = 0.0;
+    //public double[] driveData = {drivePositionM,driveVelocityMPerSec,driveAppliedVolts,driveCurrentAmps,driveTempCelcius};
+    //public double[] turnData = {turnPositionRad,turnVelocityRadPerSec,turnAppliedVolts,turnCurrentAmps,turnTempCelcius};
+
+    
   }
 
   /** Updates the set of loggable inputs. */

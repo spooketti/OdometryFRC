@@ -53,8 +53,8 @@ public class SwerveTeleopCommand extends CommandBase {
     ySpeed = Math.abs(ySpeed) > Constants.Swerve.controllerDeadBand ? ySpeed : 0;
     turningSpeed = Math.abs(turningSpeed) > Constants.Swerve.controllerDeadBand ? turningSpeed : 0;
 
-    xSpeed = xLimiter.calculate(xSpeed * Constants.Swerve.maxDriveSpeedMPS);
-    ySpeed = yLimiter.calculate(ySpeed * Constants.Swerve.maxDriveSpeedMPS);
+    xSpeed = xLimiter.calculate(xSpeed) * Constants.Swerve.maxDriveSpeedMPS;
+    ySpeed = yLimiter.calculate(ySpeed) * Constants.Swerve.maxDriveSpeedMPS;
     turningSpeed = turnLimiter.calculate(turningSpeed * Constants.Swerve.maxRotationSpeedRadPS);
 
    /*  SmartDashboard.putNumber("xspeed", xSpeed);

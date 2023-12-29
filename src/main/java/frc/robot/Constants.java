@@ -19,7 +19,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class robot {
-    public static final boolean isSim = true;
+    public static final boolean isSim = false;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -34,6 +34,7 @@ public final class Constants {
     public static final double horizontalBaseM = Units.inchesToMeters(17.5);
     public static final double wheelDiameterM = Units.inchesToMeters(3.5);
     public static final double verticalBaseM = Units.inchesToMeters(17.5);
+    public static final double kDriveMotorGearRatio = 1.0 / 6.75;
 
     public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
       new Translation2d(horizontalBaseM / 2, verticalBaseM /2),
@@ -41,5 +42,12 @@ public final class Constants {
       new Translation2d(-horizontalBaseM / 2, verticalBaseM /2),
       new Translation2d(-horizontalBaseM / 2, -verticalBaseM /2)
     );
+
+    public static int[] turnPorts = {2,4,8,6};
+    public static int[] drivePorts = {1,3,7,5};
+    public static final int[] absoluteEncoderPorts = { 9, 10, 11, 12 };
+    public static boolean[] turnReversed = {false, false, false, false}; //world's least redundant code
+    public static boolean[] driveReversed = {true,false,true,false};
+
   }
 }

@@ -1,8 +1,12 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +15,8 @@ import frc.robot.subsystems.swerve.SwerveModuleIO.ModuleData;
 
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
+
+  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
   private final SwerveModuleIO[] modules = new SwerveModuleIO[4];
   private final ModuleData[] moduleData = new ModuleData[4];
@@ -25,7 +31,19 @@ public class SwerveSubsystem extends SubsystemBase {
         modules[i] = new SwerveModuleSim();
         moduleData[i] = new ModuleData();
       }
+      return;
     }
+    //robot is not a sim
+    for(int i=0;i<4;i++)
+    {
+      modules[i] = new SwerveModule(i);
+      moduleData[i] = new ModuleData();
+    }
+    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.driveKinematics,
+    new Rotation2d(0),
+    new SwerveModulePosition[] { moduleData[0].position, moduleData[1].position, moduleData[2].position,
+      moduleData[3].position },
+      new Pose2d(new Translation2d(0, 0), new Rotation2d(0, 0)));
   }
 
   public void setModuleStates(SwerveModuleState[] states)
@@ -38,19 +56,42 @@ public class SwerveSubsystem extends SubsystemBase {
     //System.out.println(modules);
   }
 
+  public Pose2d getPose() {
+    return swerveDrivePoseEstimator.getEstimatedPosition();
+  }
+
+
   public Rotation2d getRotation2d()
   {
     return new Rotation2d(realAngleRad);
   }
 
+  public void updateOdometry() {
+    if ((swerveDrivePoseEstimator == null)){
+      System.out.println("Null");
+      return;
+    }
+    swerveDrivePoseEstimator.update(getRotation2d(),
+        new SwerveModulePosition[] { moduleData[0].position, moduleData[1].position, moduleData[2].position,
+            moduleData[3].position });
+
+  }
+
   @Override 
   public void periodic()
   {
+    updateOdometry();
     for(int i=0;i<4;i++)
     {
       modules[i].updateData(moduleData[i]);
-      SmartDashboard.putNumber("Module " + Integer.toString(i) + "drivevolt", moduleData[i].driveAppliedVolts);
-      SmartDashboard.putNumber("Module " + Integer.toString(i) + "drivevelocity", moduleData[i].driveVelocityMPerSec);
+     // SmartDashboard.putNumber("Module " + Integer.toString(i) + "drivevolt", moduleData[i].driveAppliedVolts);
+     // SmartDashboard.putNumber("Module " + Integer.toString(i) + "drivevelocity", moduleData[i].driveVelocityMPerSec);
+     // SmartDashboard.putNumber("Module " + Integer.toString(i) + "drivePosition", moduleData[i].drivePositionM);
+     // SmartDashboard.putNumber("Module " + Integer.toString(i) + "driveCurrentAmps", moduleData[i].driveCurrentAmps);
+     SmartDashboard.putNumber("Module " + Integer.toString(i) + "driveVolt", moduleData[i].turnAppliedVolts);
+   
+      
+      
     }
 
    // double[] realStates = new double[8];
