@@ -5,10 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.OneOneAuto;
 import frc.robot.commands.SwerveTeleopCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -39,7 +41,10 @@ public class RobotContainer {
       () -> -pilot.getLeftX(),
       () -> -pilot.getRightX()
     ));
-
+    pilot.leftTrigger().onTrue(Commands.runOnce(() -> Robot.intakeSim.intakeVoltage(Constants.Intake.IntakeVoltage)));
+    pilot.leftTrigger().onFalse(Commands.runOnce(() -> Robot.intakeSim.intakeVoltage(0)));
+    pilot.rightTrigger().onTrue(Commands.runOnce(() -> Robot.intakeSim.outtakeVoltage(Constants.Intake.OuttakeVoltage)));
+    pilot.rightTrigger().onFalse(Commands.runOnce(() -> Robot.intakeSim.outtakeVoltage(0)));
   }
 
   /**
@@ -48,6 +53,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PrintCommand("no auto trolled");
+    return new PrintCommand("autoless so sad");//OneOneAuto();
   }
 }

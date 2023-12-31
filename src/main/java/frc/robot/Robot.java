@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.intake.IntakeSimulation;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 /**
@@ -21,6 +22,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   public static SwerveSubsystem swerve = new SwerveSubsystem();
+  public static IntakeSimulation intakeSim = new IntakeSimulation();
+  //public static IntakeSubsystem intake = new IntakeSubsystem();
 
   /**
    * This function is run when the robot is first started up and should be used for any

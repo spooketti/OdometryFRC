@@ -13,41 +13,45 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 
 public class SwerveModule implements SwerveModuleIO {
-    private CANSparkMax driveMotor = new CANSparkMax(0, MotorType.kBrushless);
-    private CANSparkMax turnMotor = new CANSparkMax(0, MotorType.kBrushless);
+    private CANSparkMax driveMotor;
+    private CANSparkMax turnMotor;
     private CANCoder absoluteEncoder;
     private RelativeEncoder driveEncoder;
 
     private PIDController drivePID = new PIDController(1.5, 0, 0);
     private SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0, 2.93);
-    private PIDController turnPID = new PIDController(6, 0, 0);
+    private PIDController turnPID = new PIDController(1, 0, 0);
 
     public SwerveModule(int deviceID) {
-        
-        RelativeEncoder driveEncoder = driveMotor.getEncoder();
+
         absoluteEncoder = new CANCoder(Constants.Swerve.absoluteEncoderPorts[deviceID]);
         driveMotor = new CANSparkMax(Constants.Swerve.drivePorts[deviceID], MotorType.kBrushless); // will error use an arary in constants devID as the index
         turnMotor = new CANSparkMax(Constants.Swerve.turnPorts[deviceID], MotorType.kBrushless);
-        driveEncoder.setPositionConversionFactor(Constants.Swerve.kDriveMotorGearRatio);
+        
         absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+        //RelativeEncoder driveEncoder = driveMotor.getEncoder();
+        //driveEncoder.setPositionConversionFactor(Constants.Swerve.kDriveMotorGearRatio);
+        driveEncoder = driveMotor.getEncoder();
+        driveEncoder.setPositionConversionFactor(Constants.Swerve.kDriveMotorGearRatio);
+        driveEncoder.setVelocityConversionFactor(Constants.Swerve.kDriveMotorGearRatio/60);
         turnPID.enableContinuousInput(0, 2 * Math.PI);
     }
 
     private SwerveModuleState theoreticalState = new SwerveModuleState();
-    private double drivePositionM = 0.0;
+    //private double drivePositionM = 0.0;
     private double driveAppliedVolts = 0.0;
 
     private double turnPositionRad = 0.0;
     private double turnAppliedVolts = 0.0;
 
+
     // check swervemoduleio for the comments
     @Override
     public void updateData(ModuleData data) {
 
-        drivePositionM = driveEncoder.getPosition()/6.75;
-        data.driveVelocityMPerSec = driveMotor.getEncoder().getVelocity() * (Constants.Swerve.wheelDiameterM / 2);
-        data.driveCurrentAmps = Math.abs(driveMotor.getOutputCurrent());
-        data.drivePositionM = drivePositionM;
+        data.drivePositionM = driveEncoder.getPosition();
+        data.driveVelocityMPerSec = driveEncoder.getVelocity() * (Constants.Swerve.wheelDiameterM / 2);
+        data.driveCurrentAmps = driveMotor.getBusVoltage();//Math.abs(driveMotor.getOutputCurrent());
         data.driveAppliedVolts = driveAppliedVolts;
         data.driveTempCelcius = driveMotor.getMotorTemperature();
 
@@ -55,7 +59,7 @@ public class SwerveModule implements SwerveModuleIO {
         turnPositionRad = absoluteEncoder.getAbsolutePosition() / 180 * Math.PI;
         data.turnPositionRad = turnPositionRad;
         data.turnVelocityRadPerSec = absoluteEncoder.getVelocity() / 180 * Math.PI;
-        data.turnCurrentAmps = Math.abs(turnMotor.getOutputCurrent());
+        data.turnCurrentAmps = turnMotor.getBusVoltage();//Math.abs(turnMotor.getOutputCurrent());
         data.turnTempCelcius = turnMotor.getMotorTemperature();
         data.turnAppliedVolts = turnAppliedVolts;
 
@@ -64,7 +68,7 @@ public class SwerveModule implements SwerveModuleIO {
     }
 
     private SwerveModuleState getState() {
-        return new SwerveModuleState(driveMotor.getEncoder().getVelocity() * Constants.Swerve.wheelDiameterM / 2,
+        return new SwerveModuleState(driveEncoder.getVelocity() * Constants.Swerve.wheelDiameterM / 2,
                 new Rotation2d(turnPositionRad));
     }
 
@@ -79,7 +83,7 @@ public class SwerveModule implements SwerveModuleIO {
             state.speedMetersPerSecond = 0;
         }
         double driveVolts = driveFF.calculate(state.speedMetersPerSecond) 
-            + drivePID.calculate(driveMotor.getEncoder().getVelocity() * Constants.Swerve.wheelDiameterM / 2,
+            + drivePID.calculate(driveEncoder.getVelocity() * Constants.Swerve.wheelDiameterM / 2,
             state.speedMetersPerSecond) ;
         double turnVolts = turnPID.calculate(turnPositionRad, state.angle.getRadians());
         setDriveVoltage(driveVolts);

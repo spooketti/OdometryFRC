@@ -19,7 +19,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class robot {
-    public static final boolean isSim = false;
+    public static final boolean isSim = true;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -45,9 +45,16 @@ public final class Constants {
 
     public static int[] turnPorts = {2,4,8,6};
     public static int[] drivePorts = {1,3,7,5};
-    public static final int[] absoluteEncoderPorts = { 9, 10, 11, 12 };
+    public static int[] absoluteEncoderPorts = { 9, 10, 11, 12 };
     public static boolean[] turnReversed = {false, false, false, false}; //world's least redundant code
     public static boolean[] driveReversed = {true,false,true,false};
 
+  }
+
+  public static class Intake
+  {
+    public static final double IntakeVoltage = 1;
+    public static final double OuttakeVoltage = -1;
+    public static final int intakePort = 8;
   }
 }

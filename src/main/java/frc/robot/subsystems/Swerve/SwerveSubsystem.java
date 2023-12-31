@@ -31,7 +31,7 @@ public class SwerveSubsystem extends SubsystemBase {
         modules[i] = new SwerveModuleSim();
         moduleData[i] = new ModuleData();
       }
-      return;
+      //return;
     }
     //robot is not a sim
     for(int i=0;i<4;i++)
@@ -67,10 +67,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void updateOdometry() {
-    if ((swerveDrivePoseEstimator == null)){
-      System.out.println("Null");
-      return;
-    }
+
     swerveDrivePoseEstimator.update(getRotation2d(),
         new SwerveModulePosition[] { moduleData[0].position, moduleData[1].position, moduleData[2].position,
             moduleData[3].position });
